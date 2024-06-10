@@ -1,30 +1,32 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useLoginStore } from '~/store/logIn'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router';
 
 const formLogin = ref({
-  email: ref(''),
-  password: ref('')
+  email: '',
+  password: ''
 })
 
-const loginStore = useLoginStore ()
+const loginStore = useLoginStore()
+const { addValueToLoginList } = loginStore
 const { filtersList } = storeToRefs(loginStore)
-const router = useRouter();
+const router = useRouter()
 
-const addValueToFilterList = async () => {
-  const isLoggedIn = await loginStore.login(formLogin.value);
+interface FiltersStore {
+  addValueToLoginList(value: { 
+    email: string; 
+    password: string;
+  }): void;
+  filtersList: string[];
+}
 
-  if (isLoggedIn) {
-    router.push('/tasks'); // Redirect to home route
-  } else {
-    // Handle login failure (optional)
-  }
-};
-
+const handleLogin = () => {
+  addValueToLoginList(formLogin.value)
+  router.push({ name: 'tasks' })
+}
 </script>
-
 
 <template>
   <div class="flex justify-center items-center h-screen">
@@ -33,17 +35,17 @@ const addValueToFilterList = async () => {
     </div>
     <div class="w-full md:w-1/2 flex justify-center" id="component">
       <div class="login-container bg-gray-200 p-4 md:p-8 rounded-lg">
-        <form>
+        <form @submit.prevent="handleLogin">
           <label class="text-sm md:text-base">Email</label>
-          <input type="email" v-model="formLogin.email" required  class="block border rounded-md w-full px-2 py-1 mb-2 text-sm md:text-base">
+          <input type="email" v-model="formLogin.email" required class="block border rounded-md w-full px-2 py-1 mb-2 text-sm md:text-base">
           <label class="text-sm md:text-base">Password</label>
-          <input type="password" v-model="formLogin.password" required  class="block border rounded-md w-full px-2 py-1 mb-2 text-sm md:text-base">
+          <input type="password" v-model="formLogin.password" required class="block border rounded-md w-full px-2 py-1 mb-2 text-sm md:text-base">
           <div class="flex justify-between">
             <button type="button" @click="sendOtp" class="text-sm md:text-base text-yellow-600">Send OTP</button>
             <button type="button" @click="forgotPassword" class="text-sm md:text-base text-yellow-600">Forgot Password</button>
           </div>
           <div class="flex justify-center items-center mt-4">
-            <button @click.prevent="addValueToFilterList" class="block border border-yellow-600 rounded-md w-full px-2 py-1 mb-2 text-yellow-600 text-sm md:text-base hover:bg-yellow-600 hover:text-white transition-colors">
+            <button type="submit" class="block border border-yellow-600 rounded-md w-full px-2 py-1 mb-2 text-yellow-600 text-sm md:text-base hover:bg-yellow-600 hover:text-white transition-colors">
               LOG IN
             </button>
           </div>
@@ -61,16 +63,12 @@ const addValueToFilterList = async () => {
 @media screen and (max-width: 768px) {
   .flex {
     flex-direction: column;
-    /* Change flex direction to column on smaller screens */
     justify-content: center;
-    /* Center items vertically */
     align-items: center;
-    /* Center items horizontally */
   }
 
   .w-full {
     width: 100%;
-    /* Set width to 100% on smaller screens */
   }
 
   .login-container {
@@ -80,12 +78,8 @@ const addValueToFilterList = async () => {
 
 .login-container {
   width: 90%;
-  /* Set width to 90% of the container */
   max-width: 500px;
-  /* Set maximum width to 500px */
   height: auto;
-  /* Allow height to adjust based on content */
   padding: 20px;
-  /* Increase padding for better spacing */
 }
 </style>

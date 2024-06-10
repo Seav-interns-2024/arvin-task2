@@ -13,17 +13,13 @@ const task = ref({
   time: ref(''),
 });
 
-// Using the task store
 const taskStore = useTaskStore();
 const { addValueToTasksList } = taskStore;
 const { taskList } = storeToRefs(taskStore)
 
 const addTaskToList = () => {
-  // Add logic to add the task to the taskList (using Pinia store or other methods)
-  // Example using Pinia store
   taskStore.addValueToTasksList(task.value);
 
-  // Clear the task form after adding
   task.value = {
     title: '',
     desc: '',
@@ -88,8 +84,7 @@ interface TasksStore {
             </v-col>
           </v-row>
 
-          <!-- <small class="text-caption text-medium-emphasis">*indicates required field</small> -->
-        </v-card-text>
+          </v-card-text>
 
         <v-divider></v-divider>
 

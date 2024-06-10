@@ -11,7 +11,9 @@ export const useTaskStore = defineStore('taskStore', () => {
     title: string; 
     desc: string,
     date: string,
-    time: string }) {
+    time: string 
+  })
+  {
     const { title, desc, date, time } = value;
     const updatedTasksList = [...taskList.value, { title, desc, date, time }];
     taskList.value = updatedTasksList;

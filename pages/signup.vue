@@ -1,25 +1,27 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useSignupStore } from '~/store/signUp'
 import { storeToRefs } from 'pinia'
 
 const formSignup = ref({
-    firstName: ref (''),
-    middleNameName: ref (''),
-    lastName: ref (''),
-    suff: ref (''),
-    contactNum: ref (''),
-    bday: ref (''),
-    age: ref (''),
-    gender: ref (''),
-    email: ref(''), 
-    password: ref(''),
-    terms: ref ('')
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    suff: '',
+    contactNum: '',
+    bday: '',
+    age: '',
+    gender: '',
+    email: '', 
+    password: '',
+    terms: false
 });
 
-const signupStore = useSignupStore ()
-const { addValueToFilterList} = signupStore
+const signupStore = useSignupStore()
+const { addValueToFilterList } = signupStore
 const { filtersList } = storeToRefs(signupStore)
+const router = useRouter()
 
 interface FiltersStore {
   addValueToFilterList(value: { 
@@ -34,11 +36,14 @@ interface FiltersStore {
     email: string; 
     password: string;
     terms: boolean;
-
-}): void;
+  }): void;
   filtersList: string[];
 }
 
+const handleSignup = () => {
+  addValueToFilterList(formSignup.value)
+  router.push({ name: 'tasks' })
+}
 </script>
 
 <template>
@@ -47,7 +52,7 @@ interface FiltersStore {
             <img src="/assets/images/alabasta.png" class="h-13 w-auto" alt="Main Logo">
         </div>
         <div class="w-full md:w-2/3 flex justify-center" id="component">
-            <form>
+            <form @submit.prevent="handleSignup">
                 <div class="w-full md:w-3/4 lg:w-11/12 bg-gray-200 p-4 rounded-lg">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex-1 mb-4 mr-4">
@@ -118,7 +123,7 @@ interface FiltersStore {
                         <label>Data Privacy Consent</label>
                     </div>
                     <div class="flex justify-center mb-4 ">
-                        <button @click.prevent="addValueToFilterList(formSignup)" class="block border border-yellow-600 text-yellow-600 rounded-md w-1/2 px-2 py-1 
+                        <button type="submit" class="block border border-yellow-600 text-yellow-600 rounded-md w-1/2 px-2 py-1 
                     hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition-colors">SIGN UP</button>
                     </div>
                 </div>
